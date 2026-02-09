@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InPass - Tu Pasaporte Digital para Hoteles</title>
+    <meta name="description" content="Check-in hotelero instantáneo. Crea tu pasaporte digital una vez, úsalo en cada viaje. Sin formularios, sin esperas.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #0A0E27;
+            --accent: #00D9FF;
+            --accent-soft: #4DE8FF;
+            --text: #1A1D35;
+            --text-light: #6B7280;
+            --bg: #FAFBFC;
+            --card-bg: #FFFFFF;
+            --border: rgba(10, 14, 39, 0.08);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Archivo', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Animated background gradient */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 217, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(77, 232, 255, 0.06) 0%, transparent 50%);
+            animation: gradientShift 15s ease infinite;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-10%, -10%); }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        /* Navigation */
+        nav {
+            padding: 24px 0;
+            position: sticky;
+            top: 0;
+            background: rgba(250, 251, 252, 0.9);
+            backdrop-filter: blur(12px);
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-family: 'Space Mono', monospace;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--primary);
+            position: relative;
+            display: inline-block;
+        }
+        
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo:hover::after {
+            transform: scaleX(1);
+        }
+        
+        .nav-cta {
+            background: var(--primary);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            border: 2px solid var(--primary);
+        }
+        
+        .nav-cta:hover {
+            background: transparent;
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 120px 0 80px;
+            position: relative;
+        }
+        
+        .hero-content {
+            max-width: 680px;
+            animation: fadeInUp 0.8s ease;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(0, 217, 255, 0.1);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 24px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        
+        h1 {
+            font-size: clamp(42px, 6vw, 72px);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            letter-spacing: -1.5px;
+            color: var(--primary);
+        }
+        
+        h1 .highlight {
+            background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-description {
+            font-size: 20px;
+            color: var(--text-light);
+            margin-bottom: 40px;
+            line-height: 1.7;
+        }
+        
+        .cta-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            padding: 18px 40px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 17px;
+            transition: all 0.3s ease;
+            display: inline-block;
+            border: 2px solid var(--primary);
+            box-shadow: 0 4px 20px rgba(0, 217, 255, 0.15);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0, 217, 255, 0.25);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary);
+            padding: 18px 40px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 17px;
+            border: 2px solid var(--border);
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        /* Problem Section */
+        .problem {
+            padding: 80px 0;
+            background: white;
+        }
+        
+        .section-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 60px;
+        }
+        
+        .section-tag {
+            font-family: 'Space Mono', monospace;
+            font-size: 14px;
+            color: var(--accent);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+        }
+        
+        h2 {
+            font-size: clamp(32px, 4vw, 48px);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+            color: var(--primary);
+        }
+        
+        .section-description {
+            font-size: 18px;
+            color: var(--text-light);
+            line-height: 1.7;
+        }
+        
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 48px;
+        }
+        
+        .problem-card {
+            background: var(--bg);
+            padding: 32px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+        
+        .problem-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(0, 217, 255, 0.3);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+        }
+        
+        .problem-icon {
+            font-size: 32px;
+            margin-bottom: 16px;
+        }
+        
+        .problem-card h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+            color: var(--primary);
+        }
+        
+        .problem-card p {
+            color: var(--text-light);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        
+        /* Solution Section */
+        .solution {
+            padding: 100px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .solution::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+        
+        .solution-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 60px;
+            align-items: center;
+            margin-top: 60px;
+        }
+        
+        .solution-visual {
+            background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+            border-radius: 24px;
+            padding: 60px 40px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 20px 60px rgba(0, 217, 255, 0.2);
+        }
+        
+        .solution-visual-icon {
+            font-size: 80px;
+            margin-bottom: 24px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .solution-visual h3 {
+            font-size: 28px;
+            margin-bottom: 16px;
+            color: white;
+        }
+        
+        .solution-features {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        
+        .feature-item {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        
+        .feature-number {
+            font-family: 'Space Mono', monospace;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent);
+            min-width: 40px;
+        }
+        
+        .feature-content h4 {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+        
+        .feature-content p {
+            color: var(--text-light);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        /* How it Works */
+        .how-it-works {
+            padding: 100px 0;
+            background: white;
+        }
+        
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+        
+        .step {
+            text-align: center;
+            position: relative;
+        }
+        
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Mono', monospace;
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0 auto 24px;
+            box-shadow: 0 8px 20px rgba(10, 14, 39, 0.15);
+        }
+        
+        .step h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+            color: var(--primary);
+        }
+        
+        .step p {
+            color: var(--text-light);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        
+        /* For Everyone Section */
+        .for-everyone {
+            padding: 100px 0;
+            background: var(--primary);
+            color: white;
+        }
+        
+        .for-everyone .section-tag {
+            color: var(--accent-soft);
+        }
+        
+        .for-everyone h2 {
+            color: white;
+        }
+        
+        .for-everyone .section-description {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .audience-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+        
+        .audience-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            transition: all 0.3s ease;
+        }
+        
+        .audience-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--accent-soft);
+            transform: translateY(-4px);
+        }
+        
+        .audience-icon {
+            font-size: 48px;
+            margin-bottom: 24px;
+        }
+        
+        .audience-card h3 {
+            font-size: 24px;
+            margin-bottom: 16px;
+            color: white;
+        }
+        
+        .audience-list {
+            list-style: none;
+            margin-top: 20px;
+        }
+        
+        .audience-list li {
+            padding-left: 28px;
+            position: relative;
+            margin-bottom: 12px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 15px;
+        }
+        
+        .audience-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--accent-soft);
+            font-weight: 700;
+        }
+        
+        /* CTA Section */
+        .final-cta {
+            padding: 100px 0;
+            text-align: center;
+        }
+        
+        .final-cta h2 {
+            margin-bottom: 24px;
+        }
+        
+        .final-cta p {
+            font-size: 20px;
+            color: var(--text-light);
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--primary);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 60px 0 30px;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-logo {
+            font-family: 'Space Mono', monospace;
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 32px;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-size: 15px;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent-soft);
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 30px;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 80px 0 60px;
+            }
+            
+            .cta-group {
+                flex-direction: column;
+            }
+            
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .solution-content {
+                gap: 40px;
+            }
+            
+            .steps {
+                gap: 48px;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="logo">InPass</div>
+            <a href="https://inpass.lovable.app" class="nav-cta">Probar ahora</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="badge">MVP Público</div>
+                <h1>Tu <span class="highlight">pasaporte digital</span> para check-in hotelero</h1>
+                <p class="hero-description">
+                    Crea tu identidad de viaje una sola vez. Úsala en cada hotel. Sin formularios repetitivos, sin esperas en recepción.
+                </p>
+                <div class="cta-group">
+                    <a href="https://inpass.lovable.app" class="btn-primary">Crear mi pasaporte →</a>
+                    <a href="#como-funciona" class="btn-secondary">Ver cómo funciona</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="problem">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag">El Problema</div>
+                <h2>El check-in hotelero está roto</h2>
+                <p class="section-description">
+                    Cada vez que llegas a un hotel, la misma historia: formularios interminables, datos repetidos, tiempo perdido.
+                </p>
+            </div>
+            
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <div class="problem-icon">⏱️</div>
+                    <h3>Check-in lento</h3>
+                    <p>15-20 minutos promedio para completar formularios y entregar documentos físicos</p>
+                </div>
+                
+                <div class="problem-card">
+                    <div class="problem-icon">🔁</div>
+                    <h3>Datos repetidos</h3>
+                    <p>Los mismos datos una y otra vez en cada hotel que visitas</p>
+                </div>
+                
+                <div class="problem-card">
+                    <div class="problem-icon">❌</div>
+                    <h3>Errores humanos</h3>
+                    <p>Información mal cargada, documentos extraviados, procesos inconsistentes</p>
+                </div>
+                
+                <div class="problem-card">
+                    <div class="problem-icon">👨‍👩‍👧</div>
+                    <h3>Familias complicadas</h3>
+                    <p>Viajar con menores implica más formularios, más tiempo, más frustración</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Section -->
+    <section class="solution">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag">La Solución</div>
+                <h2>Un pasaporte digital que viaja contigo</h2>
+            </div>
+            
+            <div class="solution-content">
+                <div class="solution-visual">
+                    <div class="solution-visual-icon">🎫</div>
+                    <h3>Una vez. Siempre.</h3>
+                    <p style="opacity: 0.9; font-size: 16px; margin-top: 12px;">
+                        Carga tus datos una única vez y úsalos en cada check-in
+                    </p>
+                </div>
+                
+                <div class="solution-features">
+                    <div class="feature-item">
+                        <div class="feature-number">01</div>
+                        <div class="feature-content">
+                            <h4>Mobile-first</h4>
+                            <p>Todo desde tu celular. Sin papeles, sin escritorio de recepción.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-number">02</div>
+                        <div class="feature-content">
+                            <h4>Pasaportes múltiples</h4>
+                            <p>Gestiona los datos de tus hijos o acompañantes desde tu cuenta.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-number">03</div>
+                        <div class="feature-content">
+                            <h4>Check-in instantáneo</h4>
+                            <p>Selecciona quién viaja, completa en segundos, listo.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it Works -->
+    <section class="how-it-works" id="como-funciona">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag">Cómo Funciona</div>
+                <h2>Tres pasos para revolucionar tu check-in</h2>
+            </div>
+            
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Crea tu pasaporte</h3>
+                    <p>Completa tus datos personales una única vez. Añade pasaportes de acompañantes si viajas en familia.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Selecciona viajeros</h3>
+                    <p>Antes de cada check-in, elige quiénes te acompañan en ese viaje específico.</p>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Check-in instantáneo</h3>
+                    <p>Envía tus datos al hotel en segundos. Directo a tu habitación.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- For Everyone Section -->
+    <section class="for-everyone">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag">Para Todos</div>
+                <h2>Diseñado para viajeros y hoteles</h2>
+                <p class="section-description">
+                    Una solución que beneficia a ambos lados del mostrador
+                </p>
+            </div>
+            
+            <div class="audience-grid">
+                <div class="audience-card">
+                    <div class="audience-icon">✈️</div>
+                    <h3>Para Viajeros</h3>
+                    <ul class="audience-list">
+                        <li>Check-in en 60 segundos o menos</li>
+                        <li>Sin formularios repetitivos</li>
+                        <li>Gestión familiar simplificada</li>
+                        <li>Control total de tus datos</li>
+                        <li>Experiencia premium desde el inicio</li>
+                    </ul>
+                </div>
+                
+                <div class="audience-card">
+                    <div class="audience-icon">🏨</div>
+                    <h3>Para Hoteles</h3>
+                    <ul class="audience-list">
+                        <li>Recepción más ágil y eficiente</li>
+                        <li>Menos errores de carga manual</li>
+                        <li>Mejor primera impresión</li>
+                        <li>Digitalización sin fricción</li>
+                        <li>Datos precisos y completos</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final-cta">
+        <div class="container">
+            <h2>El futuro del check-in empieza hoy</h2>
+            <p>Crea tu pasaporte digital en menos de 2 minutos. Es gratis, es simple, es el final de los formularios.</p>
+            <a href="https://inpass.lovable.app" class="btn-primary">Comenzar ahora →</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">InPass</div>
+                <div class="footer-links">
+                    <a href="https://inpass.lovable.app">Probar MVP</a>
+                    <a href="#como-funciona">Cómo funciona</a>
+                    <a href="mailto:hello@inpass.com">Contacto</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 InPass. Revolucionando el check-in hotelero.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add scroll-triggered animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.problem-card, .step, .audience-card, .feature-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
