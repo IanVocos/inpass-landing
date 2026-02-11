@@ -3,814 +3,1336 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InPass - Tu Pasaporte Digital para Hoteles</title>
-    <meta name="description" content="Check-in hotelero instantáneo. Crea tu pasaporte digital una vez, úsalo en cada viaje. Sin formularios, sin esperas.">
+    <title>InPass - La Capa de Identidad para el Check-in Hotelero</title>
+    <meta name="description" content="Infraestructura digital para check-in hotelero. Cargás tus datos una vez, los usás en cada hotel. Check-in en menos de 60 segundos.">
     
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --primary: #0A0E27;
+            --primary-light: #1a237e;
             --accent: #00D9FF;
             --accent-soft: #4DE8FF;
+            --accent-dark: #00a8cc;
             --text: #1A1D35;
             --text-light: #6B7280;
+            --text-lighter: #9CA3AF;
             --bg: #FAFBFC;
             --card-bg: #FFFFFF;
             --border: rgba(10, 14, 39, 0.08);
+            --border-medium: rgba(10, 14, 39, 0.12);
+            --success: #10b981;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Archivo', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg);
             color: var(--text);
             line-height: 1.6;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
-        
-        /* Animated background gradient */
-        body::before {
-            content: '';
-            position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: 
-                radial-gradient(circle at 20% 50%, rgba(0, 217, 255, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(77, 232, 255, 0.06) 0%, transparent 50%);
-            animation: gradientShift 15s ease infinite;
-            z-index: -1;
-            pointer-events: none;
-        }
-        
-        @keyframes gradientShift {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(-10%, -10%); }
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-        
-        /* Navigation */
-        nav {
-            padding: 24px 0;
+
+        /* Header */
+        header {
+            padding: 1.5rem 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
             position: sticky;
             top: 0;
-            background: rgba(250, 251, 252, 0.9);
-            backdrop-filter: blur(12px);
             z-index: 100;
             border-bottom: 1px solid var(--border);
         }
-        
-        nav .container {
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        
+
         .logo {
-            font-family: 'Space Mono', monospace;
-            font-size: 24px;
+            font-size: 1.5rem;
             font-weight: 700;
+            color: var(--primary);
+            font-family: 'Space Mono', monospace;
             letter-spacing: -0.5px;
-            color: var(--primary);
-            position: relative;
-            display: inline-block;
         }
-        
-        .logo::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, var(--accent), var(--accent-soft));
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.3s ease;
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+            align-items: center;
         }
-        
-        .logo:hover::after {
-            transform: scaleX(1);
-        }
-        
-        .nav-cta {
-            background: var(--primary);
-            color: white;
-            padding: 12px 28px;
-            border-radius: 8px;
+
+        .nav-links a {
+            color: var(--text);
             text-decoration: none;
-            font-weight: 600;
-            font-size: 15px;
-            transition: all 0.3s ease;
-            border: 2px solid var(--primary);
+            font-weight: 500;
+            transition: color 0.3s;
+            font-size: 0.95rem;
         }
-        
-        .nav-cta:hover {
-            background: transparent;
-            color: var(--primary);
-            transform: translateY(-2px);
+
+        .nav-links a:hover {
+            color: var(--accent);
         }
-        
+
+        .badge {
+            background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
         /* Hero Section */
         .hero {
-            padding: 120px 0 80px;
-            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 5rem 2rem 4rem;
+            text-align: center;
         }
-        
-        .hero-content {
-            max-width: 680px;
-            animation: fadeInUp 0.8s ease;
-        }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .badge {
+
+        .hero-badge {
             display: inline-block;
-            padding: 8px 16px;
             background: rgba(0, 217, 255, 0.1);
-            border: 1px solid rgba(0, 217, 255, 0.3);
-            border-radius: 20px;
-            font-size: 13px;
+            color: var(--accent-dark);
+            padding: 0.6rem 1.8rem;
+            border-radius: 30px;
+            font-size: 0.85rem;
             font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 24px;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            letter-spacing: 0.3px;
         }
-        
+
         h1 {
-            font-size: clamp(42px, 6vw, 72px);
+            font-size: 3.8rem;
             font-weight: 700;
-            line-height: 1.1;
-            margin-bottom: 24px;
-            letter-spacing: -1.5px;
-            color: var(--primary);
-        }
-        
-        h1 .highlight {
-            background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+            line-height: 1.15;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            letter-spacing: -1px;
         }
-        
-        .hero-description {
-            font-size: 20px;
+
+        .hero-subtitle {
+            font-size: 1.35rem;
             color: var(--text-light);
-            margin-bottom: 40px;
+            max-width: 750px;
+            margin: 0 auto 1rem;
             line-height: 1.7;
+            font-weight: 400;
         }
-        
+
+        .hero-description {
+            font-size: 1.05rem;
+            color: var(--text-lighter);
+            max-width: 650px;
+            margin: 0 auto 3.5rem;
+            line-height: 1.6;
+        }
+
         .cta-group {
             display: flex;
-            gap: 16px;
+            gap: 1.25rem;
+            justify-content: center;
+            align-items: center;
             flex-wrap: wrap;
+            margin-bottom: 1.5rem;
         }
-        
+
         .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+            color: white;
+            padding: 1.1rem 2.5rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(0, 217, 255, 0.25);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(0, 217, 255, 0.35);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            padding: 1.1rem 2.5rem;
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-secondary:hover {
             background: var(--primary);
             color: white;
-            padding: 18px 40px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 17px;
-            transition: all 0.3s ease;
-            display: inline-block;
-            border: 2px solid var(--primary);
-            box-shadow: 0 4px 20px rgba(0, 217, 255, 0.15);
         }
-        
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 30px rgba(0, 217, 255, 0.25);
+
+        .trust-line {
+            font-size: 0.9rem;
+            color: var(--text-lighter);
+            max-width: 600px;
+            margin: 0 auto 3.5rem;
+            line-height: 1.5;
         }
-        
-        .btn-secondary {
-            background: transparent;
-            color: var(--primary);
-            padding: 18px 40px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 17px;
-            border: 2px solid var(--border);
-            transition: all 0.3s ease;
-            display: inline-block;
-        }
-        
-        .btn-secondary:hover {
-            border-color: var(--primary);
-            transform: translateY(-3px);
-        }
-        
-        /* Problem Section */
-        .problem {
-            padding: 80px 0;
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
             background: white;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
         }
-        
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            font-family: 'Space Mono', monospace;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        /* Section Styles */
+        section {
+            padding: 5rem 2rem;
+        }
+
         .section-header {
             text-align: center;
-            max-width: 700px;
-            margin: 0 auto 60px;
-        }
-        
-        .section-tag {
-            font-family: 'Space Mono', monospace;
-            font-size: 14px;
-            color: var(--accent);
+            margin-bottom: 0.75rem;
+            font-size: 0.85rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 2px;
-            margin-bottom: 16px;
+            color: var(--accent);
         }
-        
+
         h2 {
-            font-size: clamp(32px, 4vw, 48px);
-            font-weight: 700;
-            line-height: 1.2;
-            margin-bottom: 20px;
-            letter-spacing: -1px;
+            font-size: 2.75rem;
+            text-align: center;
+            margin-bottom: 1.25rem;
             color: var(--primary);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
         }
-        
-        .section-description {
-            font-size: 18px;
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.15rem;
             color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto 4rem;
             line-height: 1.7;
         }
-        
+
+        /* Problem Section */
+        .problem {
+            background: white;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .problem-intro {
+            max-width: 800px;
+            margin: 0 auto 4rem;
+            text-align: center;
+            font-size: 1.15rem;
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+
         .problem-grid {
+            max-width: 1100px;
+            margin: 0 auto;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-            margin-top: 48px;
+            gap: 2rem;
         }
-        
+
         .problem-card {
             background: var(--bg);
-            padding: 32px;
+            padding: 2.25rem;
             border-radius: 16px;
             border: 1px solid var(--border);
-            transition: all 0.3s ease;
+            transition: all 0.3s;
         }
-        
+
         .problem-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(0, 217, 255, 0.3);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border-color: var(--border-medium);
         }
-        
+
         .problem-icon {
-            font-size: 32px;
-            margin-bottom: 16px;
+            font-size: 2.5rem;
+            margin-bottom: 1.25rem;
+            line-height: 1;
         }
-        
+
         .problem-card h3 {
-            font-size: 20px;
-            margin-bottom: 12px;
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
             color: var(--primary);
+            font-weight: 600;
         }
-        
+
         .problem-card p {
             color: var(--text-light);
-            font-size: 15px;
-            line-height: 1.6;
+            line-height: 1.65;
+            font-size: 0.98rem;
         }
-        
+
         /* Solution Section */
         .solution {
-            padding: 100px 0;
-            position: relative;
-            overflow: hidden;
+            max-width: 1200px;
+            margin: 0 auto;
         }
-        
-        .solution::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--accent), transparent);
-        }
-        
-        .solution-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 60px;
-            align-items: center;
-            margin-top: 60px;
-        }
-        
-        .solution-visual {
-            background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+
+        .solution-main {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 4rem;
             border-radius: 24px;
-            padding: 60px 40px;
+            margin-bottom: 3rem;
             text-align: center;
-            color: white;
-            box-shadow: 0 20px 60px rgba(0, 217, 255, 0.2);
         }
-        
-        .solution-visual-icon {
-            font-size: 80px;
-            margin-bottom: 24px;
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        .solution-visual h3 {
-            font-size: 28px;
-            margin-bottom: 16px;
-            color: white;
-        }
-        
-        .solution-features {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-        
-        .feature-item {
-            display: flex;
-            gap: 20px;
-            align-items: flex-start;
-        }
-        
-        .feature-number {
-            font-family: 'Space Mono', monospace;
-            font-size: 24px;
+
+        .solution-main h3 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
             font-weight: 700;
-            color: var(--accent);
-            min-width: 40px;
         }
-        
-        .feature-content h4 {
-            font-size: 20px;
-            margin-bottom: 8px;
+
+        .solution-main p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .solution-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .solution-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s;
+        }
+
+        .solution-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .solution-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            line-height: 1;
+        }
+
+        .solution-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
             color: var(--primary);
+            font-weight: 600;
         }
-        
-        .feature-content p {
+
+        .solution-card p {
             color: var(--text-light);
-            font-size: 16px;
-            line-height: 1.6;
+            line-height: 1.7;
+            font-size: 1rem;
         }
-        
+
         /* How it Works */
         .how-it-works {
-            padding: 100px 0;
-            background: white;
+            background: var(--bg);
         }
-        
-        .steps {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
-            margin-top: 60px;
+
+        .steps-container {
+            max-width: 1000px;
+            margin: 0 auto;
         }
-        
+
         .step {
-            text-align: center;
-            position: relative;
+            display: grid;
+            grid-template-columns: 100px 1fr;
+            gap: 2.5rem;
+            margin-bottom: 3.5rem;
+            align-items: start;
         }
-        
+
         .step-number {
-            width: 60px;
-            height: 60px;
-            background: var(--primary);
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-soft));
             color: white;
-            border-radius: 50%;
+            font-size: 3rem;
+            font-weight: 700;
+            font-family: 'Space Mono', monospace;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Space Mono', monospace;
-            font-size: 24px;
-            font-weight: 700;
-            margin: 0 auto 24px;
-            box-shadow: 0 8px 20px rgba(10, 14, 39, 0.15);
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 217, 255, 0.3);
         }
-        
-        .step h3 {
-            font-size: 20px;
-            margin-bottom: 12px;
+
+        .step-content {
+            background: white;
+            padding: 2rem 2.5rem;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .step-content h3 {
+            font-size: 1.6rem;
+            margin-bottom: 0.75rem;
             color: var(--primary);
+            font-weight: 600;
         }
-        
-        .step p {
+
+        .step-content p {
             color: var(--text-light);
-            font-size: 15px;
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        /* Value Props - Two Columns */
+        .value-props {
+            background: white;
+            border-top: 1px solid var(--border);
+        }
+
+        .value-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 3rem;
+        }
+
+        .value-column {
+            background: var(--bg);
+            padding: 3.5rem;
+            border-radius: 24px;
+            border: 2px solid var(--border);
+        }
+
+        .value-column h3 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 700;
+        }
+
+        .value-column h3 span {
+            font-size: 2.5rem;
+        }
+
+        .value-column ul {
+            list-style: none;
+        }
+
+        .value-column li {
+            padding: 1.25rem 0;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            font-size: 1.05rem;
             line-height: 1.6;
         }
-        
-        /* For Everyone Section */
-        .for-everyone {
-            padding: 100px 0;
-            background: var(--primary);
-            color: white;
+
+        .value-column li:last-child {
+            border-bottom: none;
         }
-        
-        .for-everyone .section-tag {
-            color: var(--accent-soft);
-        }
-        
-        .for-everyone h2 {
-            color: white;
-        }
-        
-        .for-everyone .section-description {
-            color: rgba(255, 255, 255, 0.8);
-        }
-        
-        .audience-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 40px;
-            margin-top: 60px;
-        }
-        
-        .audience-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 40px;
-            transition: all 0.3s ease;
-        }
-        
-        .audience-card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: var(--accent-soft);
-            transform: translateY(-4px);
-        }
-        
-        .audience-icon {
-            font-size: 48px;
-            margin-bottom: 24px;
-        }
-        
-        .audience-card h3 {
-            font-size: 24px;
-            margin-bottom: 16px;
-            color: white;
-        }
-        
-        .audience-list {
-            list-style: none;
-            margin-top: 20px;
-        }
-        
-        .audience-list li {
-            padding-left: 28px;
-            position: relative;
-            margin-bottom: 12px;
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 15px;
-        }
-        
-        .audience-list li::before {
-            content: '✓';
-            position: absolute;
-            left: 0;
-            color: var(--accent-soft);
+
+        .value-column li::before {
+            content: "✓";
+            color: var(--accent);
             font-weight: 700;
+            font-size: 1.4rem;
+            flex-shrink: 0;
         }
-        
-        /* CTA Section */
-        .final-cta {
-            padding: 100px 0;
+
+        /* Why Now Section */
+        .why-now {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+        }
+
+        .why-now h2 {
+            color: white;
+        }
+
+        .why-now-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .why-now-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .why-now-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .why-now-card p {
+            opacity: 0.9;
+            line-height: 1.7;
+            font-size: 1.02rem;
+        }
+
+        /* Numbers that matter */
+        .numbers {
+            background: var(--bg);
+        }
+
+        .numbers-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2rem;
+        }
+
+        .number-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--border);
             text-align: center;
         }
-        
-        .final-cta h2 {
-            margin-bottom: 24px;
+
+        .number-card h3 {
+            font-size: 1.25rem;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+            font-weight: 600;
         }
-        
-        .final-cta p {
-            font-size: 20px;
+
+        .number-card p {
             color: var(--text-light);
-            margin-bottom: 40px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+            font-size: 0.95rem;
+            line-height: 1.5;
         }
-        
+
+        /* FAQ Section */
+        .faq {
+            background: white;
+            border-top: 1px solid var(--border);
+        }
+
+        .faq-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: var(--bg);
+            padding: 2rem 2.5rem;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .faq-item h3 {
+            font-size: 1.25rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .faq-item p {
+            color: var(--text-light);
+            line-height: 1.7;
+            font-size: 1.02rem;
+        }
+
+        /* Try InPass Section */
+        .try-inpass {
+            background: var(--bg);
+            padding: 6rem 2rem;
+        }
+
+        .try-container {
+            max-width: 650px;
+            margin: 0 auto;
+            background: white;
+            padding: 3.5rem;
+            border-radius: 24px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .try-container h2 {
+            font-size: 2.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .try-subtitle {
+            color: var(--text-light);
+            font-size: 1.05rem;
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+        }
+
+        .btn-big {
+            background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+            color: white;
+            padding: 1.4rem 3rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(0, 217, 255, 0.3);
+            text-decoration: none;
+            display: inline-block;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .btn-big:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(0, 217, 255, 0.4);
+        }
+
+        .demo-note {
+            font-size: 0.9rem;
+            color: var(--text-lighter);
+            margin-bottom: 2.5rem;
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2.5rem 0;
+        }
+
+        /* Hotel Contact Form */
+        .hotel-section {
+            margin-top: 2.5rem;
+        }
+
+        .hotel-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--primary);
+        }
+
+        .waitlist-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            font-size: 0.92rem;
+            color: var(--text);
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 1rem 1.25rem;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Archivo', sans-serif;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(0, 217, 255, 0.1);
+        }
+
+        .form-group-full {
+            grid-column: 1 / -1;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+            color: white;
+            padding: 1.4rem 2.5rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(0, 217, 255, 0.3);
+            margin-top: 0.5rem;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(0, 217, 255, 0.4);
+        }
+
+        .form-note {
+            font-size: 0.88rem;
+            color: var(--text-lighter);
+            text-align: center;
+            margin-top: 1rem;
+            line-height: 1.5;
+        }
+
+        .success-message {
+            display: none;
+            background: var(--success);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
         /* Footer */
         footer {
             background: var(--primary);
-            color: rgba(255, 255, 255, 0.8);
-            padding: 60px 0 30px;
-        }
-        
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-        
-        .footer-logo {
-            font-family: 'Space Mono', monospace;
-            font-size: 28px;
-            font-weight: 700;
             color: white;
+            padding: 4rem 2rem 2rem;
         }
-        
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 4rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-brand {
+            max-width: 350px;
+        }
+
+        .footer-logo {
+            font-size: 1.75rem;
+            font-weight: 700;
+            font-family: 'Space Mono', monospace;
+            margin-bottom: 1rem;
+        }
+
+        .footer-tagline {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .footer-section h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
         .footer-links {
             display: flex;
-            gap: 32px;
+            flex-direction: column;
+            gap: 0.75rem;
+            list-style: none;
         }
-        
+
         .footer-links a {
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
-            transition: color 0.3s ease;
-            font-size: 15px;
+            transition: color 0.3s;
+            font-size: 0.95rem;
         }
-        
+
         .footer-links a:hover {
-            color: var(--accent-soft);
+            color: var(--accent);
         }
-        
+
         .footer-bottom {
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 30px;
             text-align: center;
-            font-size: 14px;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
         }
-        
+
         /* Responsive */
-        @media (max-width: 768px) {
-            .hero {
-                padding: 80px 0 60px;
+        @media (max-width: 968px) {
+            h1 {
+                font-size: 2.8rem;
             }
-            
+
+            h2 {
+                font-size: 2.2rem;
+            }
+
+            .hero {
+                padding: 4rem 1.5rem 3rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.15rem;
+            }
+
+            .nav-links {
+                gap: 1.5rem;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .value-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .step {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .step-number {
+                width: 80px;
+                height: 80px;
+                font-size: 2.5rem;
+                margin: 0 auto;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+
+            .footer-brand {
+                max-width: 100%;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .try-container {
+                padding: 2.5rem 2rem;
+            }
+
+            .solution-main {
+                padding: 3rem 2rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+
             .cta-group {
                 flex-direction: column;
+                width: 100%;
             }
-            
+
             .btn-primary,
             .btn-secondary {
                 width: 100%;
                 text-align: center;
             }
-            
-            .solution-content {
-                gap: 40px;
-            }
-            
-            .steps {
-                gap: 48px;
-            }
-            
-            .footer-content {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .footer-links {
-                flex-direction: column;
-                gap: 16px;
+
+            .nav-links {
+                display: none;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav>
-        <div class="container">
+    <!-- Header -->
+    <header>
+        <nav>
             <div class="logo">InPass</div>
-            <a href="https://inpass.lovable.app" class="nav-cta">Probar ahora</a>
-        </div>
-    </nav>
+            <ul class="nav-links">
+                <li><a href="#como-funciona">Cómo funciona</a></li>
+                <li><a href="#beneficios">Beneficios</a></li>
+                <li><a href="https://inpass.lovable.app" target="_blank"><span class="badge">Probar ahora</span></a></li>
+            </ul>
+        </nav>
+    </header>
 
     <!-- Hero Section -->
     <section class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <div class="badge">MVP Público</div>
-                <h1>Tu <span class="highlight">pasaporte digital</span> para check-in hotelero</h1>
-                <p class="hero-description">
-                    Crea tu identidad de viaje una sola vez. Úsala en cada hotel. Sin formularios repetitivos, sin esperas en recepción.
-                </p>
-                <div class="cta-group">
-                    <a href="https://inpass.lovable.app" class="btn-primary">Crear mi pasaporte →</a>
-                    <a href="#como-funciona" class="btn-secondary">Ver cómo funciona</a>
-                </div>
+        <div class="hero-badge">MVP Funcional · En Validación</div>
+        <h1>La capa de identidad para el check-in hotelero</h1>
+        <p class="hero-subtitle">Cargás tus datos una vez. Los usás en cada hotel. Check-in en menos de 60 segundos. Sin formularios repetitivos.</p>
+        <p class="hero-description">InPass es infraestructura digital que permite a viajeros crear su identidad de viaje una sola vez y compartirla con múltiples hoteles de forma segura.</p>
+        
+        <div class="cta-group">
+            <a href="https://inpass.lovable.app" target="_blank" class="btn-primary">Probar InPass ahora →</a>
+            <a href="#hoteles" class="btn-secondary">Soy hotel / Quiero piloto</a>
+        </div>
+
+        <p class="trust-line">🔒 Tus datos se comparten solo con hoteles autorizados. Podés revocar acceso cuando quieras.</p>
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-number">&lt;60s</div>
+                <div class="stat-label">Check-in digital</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">1x</div>
+                <div class="stat-label">Cargás tus datos</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">Hasta −70%</div>
+                <div class="stat-label">Tiempo en recepción</div>
             </div>
         </div>
     </section>
 
     <!-- Problem Section -->
     <section class="problem">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-tag">El Problema</div>
-                <h2>El check-in hotelero está roto</h2>
-                <p class="section-description">
-                    Cada vez que llegas a un hotel, la misma historia: formularios interminables, datos repetidos, tiempo perdido.
-                </p>
+        <div class="section-header">El Problema</div>
+        <h2>El check-in es el cuello de botella de la experiencia hotelera</h2>
+        <p class="problem-intro">La primera impresión de un hotel se define en recepción. Un proceso lento, burocrático y repetitivo convierte lo que debería ser el inicio de una gran experiencia en una fricción operativa.</p>
+        
+        <div class="problem-grid">
+            <div class="problem-card">
+                <div class="problem-icon">🔁</div>
+                <h3>Repetir datos en cada hotel</h3>
+                <p>El huésped ingresa la misma información cada vez. Sin memoria, sin continuidad.</p>
             </div>
             
-            <div class="problem-grid">
-                <div class="problem-card">
-                    <div class="problem-icon">⏱️</div>
-                    <h3>Check-in lento</h3>
-                    <p>15-20 minutos promedio para completar formularios y entregar documentos físicos</p>
-                </div>
-                
-                <div class="problem-card">
-                    <div class="problem-icon">🔁</div>
-                    <h3>Datos repetidos</h3>
-                    <p>Los mismos datos una y otra vez en cada hotel que visitas</p>
-                </div>
-                
-                <div class="problem-card">
-                    <div class="problem-icon">❌</div>
-                    <h3>Errores humanos</h3>
-                    <p>Información mal cargada, documentos extraviados, procesos inconsistentes</p>
-                </div>
-                
-                <div class="problem-card">
-                    <div class="problem-icon">👨‍👩‍👧</div>
-                    <h3>Familias complicadas</h3>
-                    <p>Viajar con menores implica más formularios, más tiempo, más frustración</p>
-                </div>
+            <div class="problem-card">
+                <div class="problem-icon">⏱️</div>
+                <h3>10-20 min promedio</h3>
+                <p>Tiempo que el huésped y el recepcionista invierten en un proceso que debería ser instantáneo.</p>
+            </div>
+            
+            <div class="problem-card">
+                <div class="problem-icon">❌</div>
+                <h3>Errores de carga manual</h3>
+                <p>Tipeos incorrectos, documentos mal escaneados. La carga manual genera inconsistencias.</p>
+            </div>
+            
+            <div class="problem-card">
+                <div class="problem-icon">📄</div>
+                <h3>Papel innecesario</h3>
+                <p>Formularios físicos en pleno 2025. Una experiencia anticuada.</p>
+            </div>
+
+            <div class="problem-card">
+                <div class="problem-icon">👨‍👩‍👧</div>
+                <h3>Familias = más fricción</h3>
+                <p>Llegaste de 8 horas de viaje con dos chicos cansados. Lo último que querés es llenar 3 formularios en recepción.</p>
+            </div>
+
+            <div class="problem-card">
+                <div class="problem-icon">🏨</div>
+                <h3>La primera impresión no debería ser un trámite</h3>
+                <p>El check-in marca el inicio de la experiencia. Hoy sigue siendo burocrático.</p>
             </div>
         </div>
     </section>
 
     <!-- Solution Section -->
     <section class="solution">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-tag">La Solución</div>
-                <h2>Un pasaporte digital que viaja contigo</h2>
+        <div class="section-header">La Solución</div>
+        <h2>Capa de identidad reutilizable</h2>
+        <p class="section-subtitle">InPass es infraestructura de identidad digital. El viajero crea su perfil una vez y lo reutiliza en múltiples hoteles. Una capa que viaja con el huésped.</p>
+
+        <div class="solution-main">
+            <h3>El diferencial</h3>
+            <p>A diferencia de formularios digitales por hotel, InPass crea una identidad portable que el viajero controla. Una sola vez. Múltiples hoteles. Revocación inmediata.</p>
+        </div>
+        
+        <div class="solution-grid">
+            <div class="solution-card">
+                <div class="solution-icon">🎫</div>
+                <h3>Identidad portable</h3>
+                <p>Cargás tus datos una vez. InPass los guarda de forma segura y los comparte solo con hoteles autorizados.</p>
             </div>
             
-            <div class="solution-content">
-                <div class="solution-visual">
-                    <div class="solution-visual-icon">🎫</div>
-                    <h3>Una vez. Siempre.</h3>
-                    <p style="opacity: 0.9; font-size: 16px; margin-top: 12px;">
-                        Carga tus datos una única vez y úsalos en cada check-in
-                    </p>
-                </div>
-                
-                <div class="solution-features">
-                    <div class="feature-item">
-                        <div class="feature-number">01</div>
-                        <div class="feature-content">
-                            <h4>Mobile-first</h4>
-                            <p>Todo desde tu celular. Sin papeles, sin escritorio de recepción.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="feature-item">
-                        <div class="feature-number">02</div>
-                        <div class="feature-content">
-                            <h4>Pasaportes múltiples</h4>
-                            <p>Gestiona los datos de tus hijos o acompañantes desde tu cuenta.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="feature-item">
-                        <div class="feature-number">03</div>
-                        <div class="feature-content">
-                            <h4>Check-in instantáneo</h4>
-                            <p>Selecciona quién viaja, completa en segundos, listo.</p>
-                        </div>
-                    </div>
-                </div>
+            <div class="solution-card">
+                <div class="solution-icon">👥</div>
+                <h3>Gestión de acompañantes</h3>
+                <p>Administrás menores y acompañantes desde tu cuenta. Seleccionás quiénes viajan en cada check-in.</p>
+            </div>
+            
+            <div class="solution-card">
+                <div class="solution-icon">📱</div>
+                <h3>NFC / QR disponible en MVP</h3>
+                <p>Check-in desde el smartphone. Sin papel, sin formularios. Flujo completo funcional en validación.</p>
+            </div>
+
+            <div class="solution-card">
+                <div class="solution-icon">🔐</div>
+                <h3>Control total</h3>
+                <p>Ves qué hoteles tienen acceso. Revocás permisos cuando quieras. Tu identidad, tu decisión.</p>
+            </div>
+
+            <div class="solution-card">
+                <div class="solution-icon">⚡</div>
+                <h3>Check-in en segundos</h3>
+                <p>Compartís tus datos al llegar. El sistema los registra automáticamente. Sin esperas.</p>
+            </div>
+
+            <div class="solution-card">
+                <div class="solution-icon">🏆</div>
+                <h3>Experiencia premium</h3>
+                <p>La llegada se convierte en un momento fluido y digital. Primera impresión redefinida.</p>
             </div>
         </div>
     </section>
 
     <!-- How it Works -->
     <section class="how-it-works" id="como-funciona">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-tag">Cómo Funciona</div>
-                <h2>Tres pasos para revolucionar tu check-in</h2>
+        <div class="section-header">Cómo Funciona</div>
+        <h2>Tres pasos. Una sola vez.</h2>
+        
+        <div class="steps-container">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>Creás tu identidad de viaje</h3>
+                    <p>Escaneás tu pasaporte o documento, confirmás tus datos y creás tu perfil digital. Si viajás con menores o acompañantes, los agregás a tu cuenta. Todo en un solo lugar.</p>
+                </div>
             </div>
             
-            <div class="steps">
-                <div class="step">
-                    <div class="step-number">1</div>
-                    <h3>Crea tu pasaporte</h3>
-                    <p>Completa tus datos personales una única vez. Añade pasaportes de acompañantes si viajas en familia.</p>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>Seleccionás quién viaja</h3>
+                    <p>Antes de cada check-in, elegís qué viajeros te acompañan en ese viaje específico. Podés viajar solo, en pareja, con familia o con menores. InPass se adapta.</p>
                 </div>
-                
-                <div class="step">
-                    <div class="step-number">2</div>
-                    <h3>Selecciona viajeros</h3>
-                    <p>Antes de cada check-in, elige quiénes te acompañan en ese viaje específico.</p>
-                </div>
-                
-                <div class="step">
-                    <div class="step-number">3</div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
                     <h3>Check-in instantáneo</h3>
-                    <p>Envía tus datos al hotel en segundos. Directo a tu habitación.</p>
+                    <p>Al llegar al hotel, escaneás el código QR o usás NFC. Tus datos se comparten de forma segura con el hotel. Sin formularios, sin esperas. Directo a tu habitación.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- For Everyone Section -->
-    <section class="for-everyone">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-tag">Para Todos</div>
-                <h2>Diseñado para viajeros y hoteles</h2>
-                <p class="section-description">
-                    Una solución que beneficia a ambos lados del mostrador
-                </p>
+    <!-- Value Props -->
+    <section class="value-props" id="beneficios">
+        <div class="section-header">Beneficios</div>
+        <h2>Diseñado para ambos lados del mostrador</h2>
+        
+        <div class="value-grid">
+            <div class="value-column">
+                <h3><span>✈️</span> Para Viajeros</h3>
+                <ul>
+                    <li>Check-in en menos de 60 segundos</li>
+                    <li>Sin repetir datos en cada hotel</li>
+                    <li>Gestión centralizada de acompañantes y menores</li>
+                    <li>Control total sobre qué hoteles acceden a tu información</li>
+                    <li>Experiencia digital y premium desde el primer momento</li>
+                    <li>Sin formularios físicos ni trámites burocráticos</li>
+                </ul>
             </div>
             
-            <div class="audience-grid">
-                <div class="audience-card">
-                    <div class="audience-icon">✈️</div>
-                    <h3>Para Viajeros</h3>
-                    <ul class="audience-list">
-                        <li>Check-in en 60 segundos o menos</li>
-                        <li>Sin formularios repetitivos</li>
-                        <li>Gestión familiar simplificada</li>
-                        <li>Control total de tus datos</li>
-                        <li>Experiencia premium desde el inicio</li>
-                    </ul>
-                </div>
-                
-                <div class="audience-card">
-                    <div class="audience-icon">🏨</div>
-                    <h3>Para Hoteles</h3>
-                    <ul class="audience-list">
-                        <li>Recepción más ágil y eficiente</li>
-                        <li>Menos errores de carga manual</li>
-                        <li>Mejor primera impresión</li>
-                        <li>Digitalización sin fricción</li>
-                        <li>Datos precisos y completos</li>
-                    </ul>
-                </div>
+            <div class="value-column">
+                <h3><span>🏨</span> Para Hoteles</h3>
+                <ul>
+                    <li>Recepción más ágil y eficiente</li>
+                    <li>Eliminación de errores de carga manual</li>
+                    <li>Datos completos y precisos desde el primer momento</li>
+                    <li>Mejor primera impresión para el huésped</li>
+                    <li>Digitalización sin cambiar infraestructura existente</li>
+                    <li>Reducción de papel y procesos administrativos</li>
+                    <li>Reducción de costos operativos: menos tiempo de recepción dedicado a carga manual y picos de check-in</li>
+                </ul>
             </div>
         </div>
     </section>
 
-    <!-- Final CTA -->
-    <section class="final-cta">
-        <div class="container">
-            <h2>El futuro del check-in empieza hoy</h2>
-            <p>Crea tu pasaporte digital en menos de 2 minutos. Es gratis, es simple, es el final de los formularios.</p>
-            <a href="https://inpass.lovable.app" class="btn-primary">Comenzar ahora →</a>
+    <!-- Why Now -->
+    <section class="why-now">
+        <div class="section-header" style="color: var(--accent);">Por qué ahora</div>
+        <h2>El timing es clave</h2>
+        
+        <div class="why-now-grid">
+            <div class="why-now-card">
+                <h3>La experiencia digital ya es el estándar</h3>
+                <p>Los viajeros comparan tu check-in con aerolíneas, fintech y apps como Uber. La fricción ya no es aceptable.</p>
+            </div>
+            
+            <div class="why-now-card">
+                <h3>La experiencia es ventaja competitiva</h3>
+                <p>En hotelería premium, la diferencia no está solo en la habitación. Está en cómo comienza la estadía.</p>
+            </div>
+            
+            <div class="why-now-card">
+                <h3>Eficiencia operativa</h3>
+                <p>Optimizar recepción libera tiempo del staff para atención personalizada, no carga de datos.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Numbers that matter -->
+    <section class="numbers">
+        <div class="section-header">Números que importan</div>
+        <h2>MVP funcional en validación</h2>
+        
+        <div class="numbers-grid">
+            <div class="number-card">
+                <h3>Flujo completo</h3>
+                <p>Desde escaneo de pasaporte hasta check-in con hotel. Todo funcional.</p>
+            </div>
+            
+            <div class="number-card">
+                <h3>Control de acceso</h3>
+                <p>El viajero ve qué hoteles tienen permisos y puede revocarlos en un toque.</p>
+            </div>
+            
+            <div class="number-card">
+                <h3>Gestión de menores</h3>
+                <p>Administración de acompañantes integrada desde el inicio.</p>
+            </div>
+            
+            <div class="number-card">
+                <h3>Buenas prácticas de privacidad</h3>
+                <p>Enfoque privacy-first. Datos compartidos solo con autorización explícita.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq">
+        <div class="section-header">Preguntas Frecuentes</div>
+        <h2>Todo lo que necesitás saber</h2>
+        
+        <div class="faq-container">
+            <div class="faq-item">
+                <h3>¿Qué datos guarda InPass?</h3>
+                <p>InPass almacena la información básica de tu documento de identidad o pasaporte: nombre, número de documento, fecha de nacimiento, nacionalidad. También podés agregar datos de contacto y acompañantes. Vos controlás qué se comparte y con quién.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>¿Quién ve mis datos?</h3>
+                <p>Solo los hoteles que vos autorizás explícitamente. Cuando hacés check-in en un hotel, compartís tu información de forma segura. Podés ver en todo momento qué hoteles tienen acceso activo a tus datos.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>¿Puedo revocar el acceso de un hotel a mis datos?</h3>
+                <p>Sí, en cualquier momento. Desde tu perfil podés ver la lista de hoteles con acceso y revocar permisos con un toque. El hotel dejará de tener acceso inmediatamente.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>¿Funciona para familias con menores?</h3>
+                <p>Sí. InPass está diseñado específicamente para esto. Podés agregar pasaportes de menores y acompañantes a tu cuenta y seleccionar quiénes viajan en cada check-in. Así evitás llenar formularios repetitivos para cada integrante de la familia.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>¿Cómo sería un piloto con un hotel?</h3>
+                <p>Estamos buscando hoteles interesados en validar InPass con huéspedes reales. El piloto es corto (4-8 semanas), sin costo inicial, y el hotel no necesita cambiar sus sistemas actuales. Solo validamos el flujo, medimos tiempos y recolectamos feedback.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>¿Qué necesita el hotel para empezar?</h3>
+                <p>En esta etapa de MVP, mínimo. No requiere integración con el PMS ni cambios en infraestructura. El piloto funciona de forma paralela para validar el flujo y la experiencia sin afectar operaciones actuales.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Try InPass -->
+    <section class="try-inpass" id="hoteles">
+        <div class="try-container">
+            <h2>Probá InPass ahora</h2>
+            <p class="try-subtitle">InPass está en fase de validación. Explorá el flujo completo de check-in digital y viví la experiencia del nuevo estándar hotelero.</p>
+            
+            <a href="https://inpass.lovable.app" target="_blank" class="btn-big">Probar InPass ahora →</a>
+            
+            <p class="demo-note">💡 Demo interactiva. No requiere registro.</p>
+
+            <hr class="divider">
+
+            <div class="hotel-section">
+                <h3>¿Sos hotelero o querés más información?</h3>
+                <p class="try-subtitle">Dejanos tu contacto. Nos comunicamos para contarte más sobre InPass, pilotos y oportunidades de implementación.</p>
+                
+                <div id="success-message" class="success-message">
+                    ✓ ¡Perfecto! Te contactaremos pronto con novedades sobre InPass.
+                </div>
+                
+                <form class="waitlist-form" id="waitlist-form" action="https://formspree.io/f/TU_FORM_ID_AQUI" method="POST">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Nombre completo *</label>
+                            <input type="text" id="name" name="name" required placeholder="Juan Pérez">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email *</label>
+                            <input type="email" id="email" name="email" required placeholder="tu@email.com">
+                        </div>
+                    </div>
+
+                    <div class="form-group form-group-full">
+                        <label for="user-type">¿Cómo querés usar InPass? *</label>
+                        <select id="user-type" name="user-type" required>
+                            <option value="">Selecciona una opción</option>
+                            <option value="viajero-frecuente">Soy viajero frecuente</option>
+                            <option value="viajero-familia">Viajo con familia/menores</option>
+                            <option value="viajero-negocios">Viajes de negocios</option>
+                            <option value="hotelero">Represento un hotel</option>
+                            <option value="cadena-hotelera">Represento una cadena hotelera</option>
+                            <option value="inversor">Soy inversor / busco información</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group form-group-full">
+                        <label for="city">Ciudad (opcional)</label>
+                        <input type="text" id="city" name="city" placeholder="Ej: Salta, Buenos Aires">
+                    </div>
+                    
+                    <button type="submit" class="btn-submit">Solicitar información</button>
+                    
+                    <p class="form-note">🔒 Tu información está segura. Sin spam. Solo actualizaciones relevantes sobre InPass.</p>
+                </form>
+            </div>
         </div>
     </section>
 
     <!-- Footer -->
     <footer>
-        <div class="container">
-            <div class="footer-content">
+        <div class="footer-content">
+            <div class="footer-brand">
                 <div class="footer-logo">InPass</div>
-                <div class="footer-links">
-                    <a href="https://inpass.lovable.app">Probar MVP</a>
-                    <a href="#como-funciona">Cómo funciona</a>
-                    <a href="mailto:hello@inpass.com">Contacto</a>
-                </div>
+                <p class="footer-tagline">La infraestructura digital que transforma el check-in hotelero. Creando el futuro de la llegada a hoteles.</p>
             </div>
-            <div class="footer-bottom">
-                <p>© 2025 InPass. Revolucionando el check-in hotelero.</p>
+            
+            <div class="footer-section">
+                <h4>Producto</h4>
+                <ul class="footer-links">
+                    <li><a href="https://inpass.lovable.app" target="_blank">Probar MVP</a></li>
+                    <li><a href="#como-funciona">Cómo funciona</a></li>
+                    <li><a href="#beneficios">Beneficios</a></li>
+                    <li><a href="#hoteles">Contacto</a></li>
+                </ul>
             </div>
+            
+            <div class="footer-section">
+                <h4>Contacto</h4>
+                <ul class="footer-links">
+                    <li><a href="mailto:hello@inpass.com">hello@inpass.com</a></li>
+                    <li><a href="#hoteles">Para hoteles</a></li>
+                    <li><a href="#hoteles">Inversores</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            © 2025 InPass · Revolucionando el check-in hotelero · Salta, Argentina
         </div>
     </footer>
 
     <script>
+        // Handle form submission
+        const form = document.getElementById('waitlist-form');
+        const successMessage = document.getElementById('success-message');
+
+        form.addEventListener('submit', function(e) {
+            setTimeout(() => {
+                form.style.display = 'none';
+                successMessage.classList.add('show');
+            }, 1000);
+        });
+
         // Smooth scroll for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -823,28 +1345,6 @@
                     });
                 }
             });
-        });
-
-        // Add scroll-triggered animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.problem-card, .step, .audience-card, .feature-item').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(30px)';
-            el.style.transition = 'all 0.6s ease';
-            observer.observe(el);
         });
     </script>
 </body>
